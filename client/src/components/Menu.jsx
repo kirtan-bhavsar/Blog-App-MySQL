@@ -1,9 +1,8 @@
-import React from 'react';
-import {Link} from 'react-router-dom';
+import React from 'react'
 
-const Home = () => {
+const Menu = () => {
 
-   const posts = [
+    const posts = [
     {
       id: 1,
       title: "Lorem ipsum dolor sit amet consectetur adipisicing elit",
@@ -30,27 +29,20 @@ const Home = () => {
     },
   ];
 
-
   return (
-    <div className='home'>
-      <div className="posts">
+    <div className='menu'>
+        <h1>Other posts you may like</h1>
         {posts.map((post) => {
-          return(
-            <div className="post">
-              <div className="img">
-                <img src={post.img} alt="img" />
-              </div>
-              <div className="content">
-                <Link className='link' to={`/post/${post.id}`}><h1>{post.title}</h1></Link>
-                <p>{post.desc}</p>
-                <button>Read More</button>
-              </div>
-            </div>
-          )
+            return(
+                <div className="post">
+                    <img src={post.img} alt="img" />
+                    <h2>{post.title}</h2>
+                    <button>Read More</button>
+                </div>
+            )
         })}
-      </div>
     </div>
   )
 }
 
-export default Home
+export default Menu

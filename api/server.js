@@ -3,7 +3,8 @@ import dotenv from "dotenv/config";
 import db from "./db.js";
 import authRouter from "./Routes/authRoutes.js";
 import postRouter from "./Routes/postRoutes.js";
-import userRouter from "./Routes/postRoutes.js";
+import userRouter from "./Routes/userRoutes.js";
+// import cors from "cors";
 
 const app = express();
 
@@ -18,8 +19,8 @@ app.get("/api/test", (req, res) => {
 });
 
 app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/users/", userRouter);
-app.use("/api/v1/posts/", postRouter);
+app.use("/api/v1/users", userRouter);
+app.use("/api/v1/posts", postRouter);
 
 app.listen(port, () => {
   console.log(`App running successfully on port ${port}`);

@@ -4,8 +4,12 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import {successNotification,errorNotification} from '../components/Toast.jsx';
+import { AuthContext } from '../../../api/Context/authContext.jsx';
+import { useContext } from 'react';
 
 const Login = () => {
+
+  const {login} = useContext(AuthContext);
 
   const navigate = useNavigate();
 
@@ -21,7 +25,8 @@ const Login = () => {
   const loginUser = async(e) => {
     e.preventDefault();
     try {
-      await axios.post('/api/v1/auth/login',values);
+      // await axios.post('/api/v1/auth/login',values);
+      await login(values);
       successNotification("👏You logged in! Now go pretend to be productive");
       return navigate('/')
     } catch (error) {

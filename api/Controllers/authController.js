@@ -76,7 +76,15 @@ const login = async (req, res) => {
 };
 
 const logout = async (req, res) => {
-  res.status(200).json({ message: "auth routes and controllers working fine" });
+  res
+    .clearCookie("accessToken", {
+      sameSite: "none",
+      secure: true,
+    })
+    .status(200)
+    .json({
+      message: "🖥️Thank you for reducing our server load. Much appreciated.",
+    });
 };
 
 export { register, login, logout };

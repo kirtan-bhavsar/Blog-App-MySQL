@@ -1,7 +1,11 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
+import { useContext } from 'react';
+import { AuthContext } from '../../../api/Context/authContext.jsx';
 
 const Home = () => {
+
+  const {currentUser} = useContext(AuthContext);
 
    const posts = [
     {

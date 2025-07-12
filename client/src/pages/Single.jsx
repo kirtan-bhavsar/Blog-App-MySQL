@@ -8,6 +8,7 @@ import axios from 'axios';
 import moment from 'moment';
 import { useContext } from "react";
 import { AuthContext } from "../../../api/Context/authContext.jsx";
+import {FaUserCircle} from 'react-icons/fa';
 
 const Single = () => {
 
@@ -43,7 +44,8 @@ const Single = () => {
          alt="img"
        />
        <div className="user">
-         {post.userImage && <img src={post.userImage} alt="img" />}
+         {post.userImage ? <img src={post.userImage} alt="img" /> : <FaUserCircle className="icon"></FaUserCircle>}
+         {/* {post.userImage && <img src={post.userImage} alt="img" />} */}
          <div className="info">
            <span>{post.username}</span>
            <p>{moment(post.date).fromNow()}</p>

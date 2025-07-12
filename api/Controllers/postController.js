@@ -1,5 +1,7 @@
 import express from "express";
 import db from "../db.js";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv/config";
 
 const getPosts = async (req, res) => {
   const cat = req.query.cat;
@@ -19,7 +21,7 @@ const addPost = async (req, res) => {
 };
 
 const getPost = async (req, res) => {
-  const getPostQuery = `select u.img as userImage ,uid as postUserId, username, title, p.img as img, description, date from posts p join users u on p.uid = u.id where p.id = ?`;
+  const getPostQuery = `select u.img as userImage ,uid as postUserId, username,cat, title, p.img as img, description, date from posts p join users u on p.uid = u.id where p.id = ?`;
 
   db.query(getPostQuery, [req.params.id], (err, data) => {
     if (err) return console.log(err);
@@ -32,7 +34,36 @@ const editPost = async (req, res) => {
 };
 
 const deletePost = async (req, res) => {
-  res.status(200).json({ message: "post routes and controllers working fine" });
+  const token = req.cookies.acessToken;
+  if (!token) return res.status(400).json({ message: "User not authrized" });
+
+  db.query(`select * from posts where id = ?`, [req.params.id], (err, data) => {
+    if (err) return console.log(err);
+    const postUserId = data[0].uid;
+
+    jwt.verify(token, process.env.JWT_SECRET, async (err, data) => {
+      if (err) return res.status(400).json({ message: "Token is not valid" });
+      const userId = data.user.id;
+      // console.log(data.user.id);
+
+      const deletePostQuery = `delete from posts where uid = ? and id = ?`;
+
+      db.query(deletePostQuery, [data.user.id, req.params.id], (err, data) => {
+        if (err)
+          return res
+            .status(401)
+            .json({ message: "User not authorized to peform this action" });
+        // console.log(data);
+        // console.log("data from inside the delete query");
+        if (userId !== postUserId)
+          return res.status(401).json({
+            message:
+              "User not authorized to perform this action as user ids does not match",
+          });
+        return res.status(200).json({ message: "Post deleted successfully" });
+      });
+    });
+  });
 };
 
 export { addPost, getPost, getPosts, editPost, deletePost };

@@ -4,6 +4,7 @@ import db from "./db.js";
 import authRouter from "./Routes/authRoutes.js";
 import postRouter from "./Routes/postRoutes.js";
 import userRouter from "./Routes/userRoutes.js";
+import cookieParser from "cookie-parser";
 // import cors from "cors";
 
 const app = express();
@@ -11,6 +12,7 @@ const app = express();
 db;
 
 app.use(express.json());
+app.use(cookieParser());
 
 const port = process.env.PORT;
 

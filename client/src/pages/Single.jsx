@@ -9,6 +9,7 @@ import moment from 'moment';
 import { useContext } from "react";
 import { AuthContext } from "../../../api/Context/authContext.jsx";
 import {FaUserCircle} from 'react-icons/fa';
+import { useNavigate } from "react-router-dom";
 
 const Single = () => {
 
@@ -18,8 +19,17 @@ const Single = () => {
  const {currentUser} = useContext(AuthContext);
 
  const location = useLocation();
+ const navigate = useNavigate();
  const postId = location.pathname.split('/')[2];
 
+ const deletePost = async() => {
+  try {
+    await axios.delete(`/api/v1/posts/${postId}`)
+    return navigate('/');
+  } catch (error) {
+    return console.log(error);
+  }
+ }
 
  useEffect(()=> {
 
@@ -28,6 +38,8 @@ const Single = () => {
  try {
    const data = await axios.get(`/api/v1/posts/${postId}`);
    setPost((data.data)[0]);
+   console.log(data.data[0].cat);
+   console.log('data.data[0].cat');
  } catch (error) {
    console.log(error)
  }
@@ -55,7 +67,7 @@ const Single = () => {
            <Link to={`/write?edit=${postId}`}>
              <img src={Edit} alt="edit" />
            </Link>
-           <img src={Delete} alt="delete" />
+           <img onClick={deletePost} src={Delete} alt="delete" />
          </div>:
          <></>
          }
@@ -67,7 +79,7 @@ const Single = () => {
        {post.description}
        </p>
      </div>
-     <Menu></Menu>
+     {post?.cat && <Menu cat={post.cat}></Menu>}
    </div>
  );
 };

@@ -16,7 +16,7 @@ postRouter.get("/:id", getPost);
 
 postRouter.put("/:id", editPost);
 
-postRouter.delete("/;id", deletePost);
+postRouter.delete("/:id", deletePost);
 
 postRouter.post("/", addPost);
 

@@ -51,8 +51,10 @@ useEffect(() => {
    const fetchData = async() => {
      try {
        const data = await axios.get(`api/v1/posts${cat}`);
-       console.log(`api/v1/posts${location.search}`);
-       console.log(data);
+      //  console.log(`api/v1/posts${location.search}`);
+      //  console.log(data);
+      // console.log(data.data);
+      // console.log('data.data');
        setPosts(data.data);
      } catch (error) {
        console.log(error)

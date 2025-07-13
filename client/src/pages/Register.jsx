@@ -26,7 +26,7 @@ const Register = () => {
  const registerUser = async(e) => {
    e.preventDefault();
    try {
-     await axios.post('/apiv1/auth/register',values);
+     await axios.post('/api/v1/auth/register',values);
      successNotification("🤷‍♂️ Because the world clearly needed one more blog...");
      navigate('/login');
    } catch (error) {

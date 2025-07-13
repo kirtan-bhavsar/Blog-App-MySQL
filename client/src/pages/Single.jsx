@@ -10,6 +10,7 @@ import { useContext } from "react";
 import { AuthContext } from "../../../api/Context/authContext.jsx";
 import {FaUserCircle} from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
+import DOMPurify from 'dompurify';
 
 const Single = () => {
 
@@ -52,7 +53,7 @@ const Single = () => {
    <div className="single">
      <div className="content">
        <img
-         src={post.img}
+         src={`../../public/upload/${post.img}`}
          alt="img"
        />
        <div className="user">
@@ -64,7 +65,7 @@ const Single = () => {
          </div>
          { currentUser?.data.id === post.postUserId ?
          <div className="edit">
-           <Link to={`/write?edit=${postId}`}>
+           <Link to={`/write?edit=${postId}`} state={post}>
              <img src={Edit} alt="edit" />
            </Link>
            <img onClick={deletePost} src={Delete} alt="delete" />
@@ -75,9 +76,11 @@ const Single = () => {
        <h1>
         {post.title}
        </h1>
-       <p>
-       {post.description}
-       </p>
+       <p
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(post.description),
+          }}
+          ></p>
      </div>
      {post?.cat && <Menu cat={post.cat}></Menu>}
    </div>

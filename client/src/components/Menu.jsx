@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
+
 const Menu = ({cat}) => {
 
   const [posts,setPosts] = useState([]);
@@ -26,7 +27,7 @@ const Menu = ({cat}) => {
         {posts.map((post) => {
             return(
                 <div className="post">
-                    <img src={post.img} alt="img" />
+                    <img src={`../../public/upload/${post.img}`} alt="img" />
                     <h2>{post.title}</h2>
                     <Link to={`/post/${post.id}`}><button>Read More</button></Link>
                 </div>

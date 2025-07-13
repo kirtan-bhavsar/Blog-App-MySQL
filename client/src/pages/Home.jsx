@@ -46,6 +46,10 @@ const Home = () => {
  //   },
  // ];
 
+  const getText = (html) => {
+    const doc = new DOMParser().parseFromString(html,"text/html");
+    return doc.body.textContent;
+  }
 
 useEffect(() => {
    const fetchData = async() => {
@@ -73,11 +77,11 @@ useEffect(() => {
          return(
            <div className="post">
              <div className="img">
-               <img src={post.img} alt="img" />
+               <img src={`../../public/upload/${post.img}`} alt="img" />
              </div>
              <div className="content">
                <Link className='link' to={`/post/${post.id}`}><h1>{post.title}</h1></Link>
-               <p>{post.description}</p>
+               <p>{getText(post.description)}</p>
                <button>Read More</button>
              </div>
            </div>

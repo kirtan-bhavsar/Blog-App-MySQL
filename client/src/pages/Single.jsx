@@ -34,7 +34,6 @@ const Single = () => {
 
  useEffect(()=> {
 
-
  const fetchData = async() => {
  try {
    const data = await axios.get(`/api/v1/posts/${postId}`);
@@ -46,7 +45,7 @@ const Single = () => {
  }
  }
  fetchData();
- },[])
+ },[postId])
 
 
  return (

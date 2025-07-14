@@ -21,7 +21,7 @@ const Navbar = () => {
   return (
     <div className='navbar'>
     <div className='container'>
-      <div className="logo"><img src={Logo} alt="img" /></div>
+      <div className="logo"><Link to='/'><img src={Logo} alt="img" /></Link></div>
       <div className="links">
         <Link className='link' to='/?cat=art'>ART</Link>
         <Link className='link' to='/?cat=science'>SCIENCE</Link>

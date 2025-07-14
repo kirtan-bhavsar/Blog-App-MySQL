@@ -13,7 +13,7 @@ const Menu = ({cat}) => {
     const fetchData = async() => {
       try {
        const data = await axios.get(`/api/v1/posts?cat=${cat}`);
-       setPosts(data.data);
+       setPosts(data.data); 
       } catch (error) {
         console.log(error);
       }
@@ -29,7 +29,7 @@ const Menu = ({cat}) => {
                 <div className="post">
                     <img src={`../../public/upload/${post.img}`} alt="img" />
                     <h2>{post.title}</h2>
-                    <Link to={`/post/${post.id}`}><button>Read More</button></Link>
+                    <button><Link className='link' to={`/post/${post.id}`}>Read More</Link></button>
                 </div>
             )
         })}

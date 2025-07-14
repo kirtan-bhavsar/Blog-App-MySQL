@@ -82,7 +82,7 @@ useEffect(() => {
              <div className="content">
                <Link className='link' to={`/post/${post.id}`}><h1>{post.title}</h1></Link>
                <p>{getText(post.description)}</p>
-               <button>Read More</button>
+               <button><Link className='link' to={`/post/${post.id}`}>Read More</Link></button>
              </div>
            </div>
          )

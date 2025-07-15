@@ -13,7 +13,10 @@ const Menu = ({cat}) => {
     const fetchData = async() => {
       try {
        const data = await axios.get(`/api/v1/posts?cat=${cat}`);
-       setPosts(data.data); 
+       console.log(data.data.data[0]);
+       console.log("data for menu.jsx");
+       console.log("data for menu.jsx");
+       setPosts(data.data.data[0]); 
       } catch (error) {
         console.log(error);
       }

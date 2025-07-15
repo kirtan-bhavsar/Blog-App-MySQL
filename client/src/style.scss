@@ -199,6 +199,43 @@ $lightGreen: #b9e7e7;
           }
         }
       }
+      .pagination {
+        // background-color:blue;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 80px;
+        // background-color: red;
+        // width: 100%;
+        .paginationContainer {
+          // background-color: blue;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          // margin-top: 50px;
+          padding: 20px 50px;
+          justify-content: space-evenly;
+          width: 500px;
+          color: teal;
+          .paginationBtn {
+            font-size: 18px;
+            color: teal;
+            text-decoration: none;
+            button {
+              background-color: transparent;
+              border: 1px solid transparent;
+              text-decoration: none;
+              font-size: 18px;
+              color: teal;
+              margin-bottom: 5px;
+            }
+
+            .active {
+              border-bottom: 1px solid teal;
+            }
+          }
+        }
+      }
     }
 
     // Single page

@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv/config";
 
 const getPosts = async (req, res) => {
+  console.log("getPosts called ");
+
   const cat = req.query.cat;
 
   // updated code starts
@@ -21,7 +23,7 @@ const getPosts = async (req, res) => {
 
   db.query(getPostsQuery, [req.query.cat], (err, data) => {
     if (err) return res.status(500).json({ message: "Internal Server Error" });
-    return res.status(200).json(data);
+    return res.status(200).json({ data, currentPage: page });
   });
 };
 

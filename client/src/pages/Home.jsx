@@ -9,15 +9,20 @@ import { useLocation } from 'react-router-dom';
 
 const Home = () => {
 
+ const location = useLocation();
+ console.log(location);
+ console.log("location");
 
- const cat = useLocation().search;
-
+ const queries = useLocation().search;
 
  const [posts,setPosts] = useState([]);
-
+ const [totalPosts,setTotalPosts] = useState();
 
  const {currentUser} = useContext(AuthContext);
 
+ console.log(posts);
+ console.log('posts');
+ console.log('posts');
 
  //  const posts = [
  //   {
@@ -54,19 +59,22 @@ const Home = () => {
 useEffect(() => {
    const fetchData = async() => {
      try {
-       const data = await axios.get(`api/v1/posts${cat}`);
+       const data = await axios.get(`api/v1/posts${queries}`);
       //  console.log(`api/v1/posts${location.search}`);
-      //  console.log(data);
-      // console.log(data.data);
-      // console.log('data.data');
-       setPosts(data.data);
+      //  console.log(data.data[0]);
+      // console.log("data.data[0] in Home.jsx");
+      // console.log('data.data[0] in Home.jsx');
+      // console.log(data.data[1][0].totalPosts);
+      // console.log("data.data[1] in Home.jsx");
+      // console.log('data.data[1] in Home.jsx');
+       setPosts(data.data[0]);
+       setTotalPosts(data.data[1][0].totalPosts);
      } catch (error) {
        console.log(error)
      }
    }
    fetchData();
-},[cat]);
-
+},[queries]);
 
 
 

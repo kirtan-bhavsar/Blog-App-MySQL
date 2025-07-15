@@ -6,9 +6,18 @@ import dotenv from "dotenv/config";
 const getPosts = async (req, res) => {
   const cat = req.query.cat;
 
+  // updated code starts
+  const page = req.query.page || 1;
+  console.log(page);
+  const offset = (page - 1) * 5;
+  console.log(offset);
+  // updated code ends
+
   const getPostsQuery = cat
-    ? `select * from posts where cat = ?`
-    : `select * from posts`;
+    ? `select SQL_CALC_FOUND_ROWS * from posts where cat = ? order by date desc limit 5 offset ${offset} ; select FOUND_ROWS() as totalPosts`
+    : `select SQL_CALC_FOUND_ROWS * from posts order by date desc limit 5 offset ${offset} ; select FOUND_ROWS() as totalPosts`;
+  // ? `select * from posts where cat = ?`
+  // : `select * from posts`;
 
   db.query(getPostsQuery, [req.query.cat], (err, data) => {
     if (err) return res.status(500).json({ message: "Internal Server Error" });
@@ -19,8 +28,6 @@ const getPosts = async (req, res) => {
 const addPost = async (req, res) => {
   const token = req.cookies.acessToken;
   if (!token) return res.status(400).json({ message: "User not authrized" });
-  console.log(token);
-  console.log("add post token");
 
   jwt.verify(token, process.env.JWT_SECRET, async (err, data) => {
     if (err) return res.status(400).json({ message: "Token is not valid" });

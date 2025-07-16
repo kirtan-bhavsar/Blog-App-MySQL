@@ -7,9 +7,8 @@ import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import { FaChevronLeft } from 'react-icons/fa';
 import { FaChevronRight } from 'react-icons/fa';
-
-
-
+import {FaHeart} from 'react-icons/fa';
+import {FaRegHeart} from 'react-icons/fa';
 
 const Home = () => {
 
@@ -117,7 +116,12 @@ const Home = () => {
               </div>
               <div className="content">
                 <Link className='link' to={`/post/${post.id}`}><h1>{post.title}</h1></Link>
-                <p>{getText(post.description)}</p>
+                {/* <p>{getText(post.description)}</p> */}
+                <p>{getText(post.description).length > 200 ? getText(post.description).slice(0,200) + "..." : getText(post.description) }</p>
+                             <div className="like">
+               <FaRegHeart className='like-button'></FaRegHeart>
+               <p className="like-count">{post.likeCount}</p>
+             </div>
                 <button><Link className='link' to={`/post/${post.id}`}>Read More</Link></button>
               </div>
             </div>

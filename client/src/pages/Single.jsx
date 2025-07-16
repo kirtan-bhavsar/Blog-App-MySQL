@@ -8,7 +8,8 @@ import axios from 'axios';
 import moment from 'moment';
 import { useContext } from "react";
 import { AuthContext } from "../../../api/Context/authContext.jsx";
-import {FaUserCircle} from 'react-icons/fa';
+// import {FaUserCircle} from 'react-icons/fa';
+import {FaUserCircle,FaHeart,FaRegHeart} from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
 import DOMPurify from 'dompurify';
 
@@ -72,6 +73,11 @@ const Single = () => {
          <></>
          }
        </div>
+       <div className="like">
+       <FaHeart className='liked-button'></FaHeart>
+      <FaRegHeart className="like-button"></FaRegHeart>
+      <p className="like-count">1</p>
+      </div>
        <h1>
         {post.title}
        </h1>

@@ -141,4 +141,43 @@ const deletePost = async (req, res) => {
   });
 };
 
-export { addPost, getPost, getPosts, editPost, deletePost };
+const like = async (req, res) => {
+  const token = req.cookies.acessToken;
+  if (!token) return res.status(400).json({ message: "User not authrized" });
+
+  const { postId, postedByUser } = req.params;
+
+  console.log(postId);
+  console.log("postId");
+  console.log(postedByUser);
+  console.log("postedByUser");
+
+  jwt.verify(token, process.env.JWT_SECRET, async (err, data) => {
+    if (err) res.status(400).json({ message: "Invalid token" });
+
+    const likedByUser = data.user.id;
+
+    const likePostQuery = `
+    start transaction;
+
+    insert into likes (postId,postedByUser,likedByUser) values (?);
+
+    update posts set likesCount = (select count(*) as count from likes where postId = ?) where id = ?;
+
+    commit;
+    `;
+
+    db.query(
+      likePostQuery,
+      [[postId, postedByUser, likedByUser], postId, postId],
+      async (err, data) => {
+        if (err) return console.log(err);
+        console.log(data);
+        console.log("data");
+        res.status(200).json({ message: "Post liked successfully" });
+      }
+    );
+  });
+};
+
+export { addPost, getPost, getPosts, editPost, deletePost, like };

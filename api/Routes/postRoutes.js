@@ -4,6 +4,7 @@ import {
   getPost,
   getPosts,
   deletePost,
+  like,
 } from "../Controllers/postController.js";
 
 import express from "express";
@@ -19,5 +20,7 @@ postRouter.put("/:id", editPost);
 postRouter.delete("/:id", deletePost);
 
 postRouter.post("/", addPost);
+
+postRouter.post("/like/:postId/:postedByUser", like);
 
 export default postRouter;

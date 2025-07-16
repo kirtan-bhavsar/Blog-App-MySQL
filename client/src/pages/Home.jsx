@@ -36,14 +36,14 @@ const Home = () => {
 
 
   const arrayIndex = Math.ceil(totalPosts / 5);
-  console.log(arrayIndex);
-  console.log("arrayIndex");
-  console.log("arrayIndex");
+  // console.log(arrayIndex);
+  // console.log("arrayIndex");
+  // console.log("arrayIndex");
 
   const paginationArray = Array.from({ length: arrayIndex }, (_, index) => index + 1);
-  console.log(paginationArray);
-  console.log("paginationArray");
-  console.log("paginationArray");
+  // console.log(paginationArray);
+  // console.log("paginationArray");
+  // console.log("paginationArray");
 
 
   //  const posts = [
@@ -120,7 +120,7 @@ const Home = () => {
                 <p>{getText(post.description).length > 200 ? getText(post.description).slice(0,200) + "..." : getText(post.description) }</p>
                              <div className="like">
                <FaRegHeart className='like-button'></FaRegHeart>
-               <p className="like-count">{post.likeCount}</p>
+               <p className="like-count">{post.likesCount}</p>
              </div>
                 <button><Link className='link' to={`/post/${post.id}`}>Read More</Link></button>
               </div>

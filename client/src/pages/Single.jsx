@@ -39,14 +39,25 @@ const Single = () => {
  try {
    const data = await axios.get(`/api/v1/posts/${postId}`);
    setPost((data.data)[0]);
-   console.log(data.data[0].cat);
-   console.log('data.data[0].cat');
+   console.log((data.data)[0]);
+   console.log("(data.data)[0]");
+   console.log("(data.data)[0]");
  } catch (error) {
    console.log(error)
  }
  }
  fetchData();
  },[postId])
+
+ const toggleLike = async() => {
+
+  try {
+    await axios.post(`/api/v1/posts/${post.id}/${post.postUserId}`);
+  } catch (error) {
+    console.log(error);
+  }
+
+ }
 
 
  return (

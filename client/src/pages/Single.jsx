@@ -13,14 +13,14 @@ import { AuthContext } from "../../../api/Context/authContext.jsx";
 import {FaUserCircle,FaHeart,FaRegHeart} from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
 import DOMPurify from 'dompurify';
+import {successNotification,errorNotification} from '../components/Toast.jsx';
 
 
 const Single = () => {
 
 
-
-
 const [post,setPost] = useState({});
+const[isPostLiked,setIsPostLiked] = useState(false);
 
 
 const {currentUser} = useContext(AuthContext);
@@ -43,32 +43,36 @@ const deletePost = async() => {
 
 useEffect(()=> {
 
-
 const fetchData = async() => {
 try {
   const data = await axios.get(`/api/v1/posts/${postId}`);
-  setPost((data.data)[0]);
-  console.log((data.data)[0]);
-  console.log("(data.data)[0]");
-  console.log("(data.data)[0]");
+  setPost(data.data.data[0]);
+  // setIsPostLiked(data.data.ifPostLiked);
+  if (data.data.ifPostLiked !== isPostLiked) {
+      setIsPostLiked(data.data.ifPostLiked);
+    }
+  // console.log(data.data.data[0]);
+  // console.log("data.data.data[0]");
+  // console.log("data.data.data[0]");
 } catch (error) {
-  console.log(error)
+  console.log(error);
+  errorNotification('Peeking allowed… but for full access, we need to know who you are!');
+  return navigate('/login');
 }
 }
 fetchData();
-},[postId])
+},[postId,isPostLiked])
 
 
 const toggleLike = async() => {
-
-
+  console.log('toggleLike function called');
  try {
-   await axios.post(`/api/v1/posts/${post.id}/${post.postUserId}`);
+   await axios.post(`/api/v1/posts/like/${post.id}/${post.postUserId}`);
+   setIsPostLiked(!isPostLiked);
+   return null;
  } catch (error) {
-   console.log(error);
+   return console.log(error);
  }
-
-
 }
 
 
@@ -99,8 +103,12 @@ return (
         }
       </div>
       <div className="like">
+        <button onClick={() => toggleLike()}>{ isPostLiked ? 
       <FaHeart className='liked-button'></FaHeart>
+      :
      <FaRegHeart className="like-button"></FaRegHeart>
+      }
+      </button>
      <p className="like-count">{post.count}</p>
      </div>
       <h1>

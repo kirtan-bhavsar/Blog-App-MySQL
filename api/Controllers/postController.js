@@ -55,22 +55,36 @@ const addPost = async (req, res) => {
 };
 
 const getPost = async (req, res) => {
-  // const token = req.cookies.acessToken;
-  // if(!token) return res.status(400).json({message:"User not authrized to perform this action"});
+  const token = req.cookies.acessToken;
+  if (!token)
+    return res
+      .status(400)
+      .json({ message: "User not authrized to perform this action" });
 
-  // jwt.verify(token,process.env.JWT_SECRET,(err,data) => {
-  //   if(err) return res.status(400).json({message:"Invalid token"});
+  jwt.verify(token, process.env.JWT_SECRET, (err, data) => {
+    if (err) return res.status(400).json({ message: "Invalid token" });
 
-  //   const userId = data.user.id;
-  //   const postId = req.params.id;
+    const userId = data.user.id;
+    const postId = req.params.id;
 
-  // })
+    const checkIfLiked = `select * from likes where postId = ? and likedByUser = ?`;
 
-  const getPostQuery = `select p.likesCount as count,p.id,u.img as userImage ,uid as postUserId, username,cat, title, p.img as img, description, date from posts p join users u on p.uid = u.id where p.id = ?`;
+    let ifPostLiked;
 
-  db.query(getPostQuery, [req.params.id], (err, data) => {
-    if (err) return console.log(err);
-    return res.status(200).json(data);
+    db.query(checkIfLiked, [postId, userId], (err, data) => {
+      if (err) return console.log(err);
+      ifPostLiked = data.length > 0;
+      console.log(ifPostLiked);
+      console.log("ifPostLiked");
+      console.log("ifPostLiked");
+
+      const getPostQuery = `select p.likesCount as count,p.id,u.img as userImage ,uid as postUserId, username,cat, title, p.img as img, description, date from posts p join users u on p.uid = u.id where p.id = ?`;
+
+      db.query(getPostQuery, [req.params.id], (err, data) => {
+        if (err) return console.log(err);
+        return res.status(200).json({ data, ifPostLiked });
+      });
+    });
   });
 };
 

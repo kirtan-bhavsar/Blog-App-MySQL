@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import person from "../img/person.jpg";
 import Edit from "../img/edit.png";
@@ -13,98 +14,112 @@ import {FaUserCircle,FaHeart,FaRegHeart} from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
 import DOMPurify from 'dompurify';
 
+
 const Single = () => {
 
 
- const [post,setPost] = useState({});
 
- const {currentUser} = useContext(AuthContext);
 
- const location = useLocation();
- const navigate = useNavigate();
- const postId = location.pathname.split('/')[2];
+const [post,setPost] = useState({});
 
- const deletePost = async() => {
-  try {
-    await axios.delete(`/api/v1/posts/${postId}`)
-    return navigate('/');
-  } catch (error) {
-    return console.log(error);
-  }
- }
 
- useEffect(()=> {
+const {currentUser} = useContext(AuthContext);
 
- const fetchData = async() => {
+
+const location = useLocation();
+const navigate = useNavigate();
+const postId = location.pathname.split('/')[2];
+
+
+const deletePost = async() => {
  try {
-   const data = await axios.get(`/api/v1/posts/${postId}`);
-   setPost((data.data)[0]);
-   console.log((data.data)[0]);
-   console.log("(data.data)[0]");
-   console.log("(data.data)[0]");
+   await axios.delete(`/api/v1/posts/${postId}`)
+   return navigate('/');
  } catch (error) {
-   console.log(error)
+   return console.log(error);
  }
+}
+
+
+useEffect(()=> {
+
+
+const fetchData = async() => {
+try {
+  const data = await axios.get(`/api/v1/posts/${postId}`);
+  setPost((data.data)[0]);
+  console.log((data.data)[0]);
+  console.log("(data.data)[0]");
+  console.log("(data.data)[0]");
+} catch (error) {
+  console.log(error)
+}
+}
+fetchData();
+},[postId])
+
+
+const toggleLike = async() => {
+
+
+ try {
+   await axios.post(`/api/v1/posts/${post.id}/${post.postUserId}`);
+ } catch (error) {
+   console.log(error);
  }
- fetchData();
- },[postId])
-
- const toggleLike = async() => {
-
-  try {
-    await axios.post(`/api/v1/posts/${post.id}/${post.postUserId}`);
-  } catch (error) {
-    console.log(error);
-  }
-
- }
 
 
- return (
-   <div className="single">
-     <div className="content">
-       <img
-         src={`../../public/upload/${post.img}`}
-         alt="img"
-       />
-       <div className="user">
-         {post.userImage ? <img src={post.userImage} alt="img" /> : <FaUserCircle className="icon"></FaUserCircle>}
-         {/* {post.userImage && <img src={post.userImage} alt="img" />} */}
-         <div className="info">
-           <span>{post.username}</span>
-           <p>{moment(post.date).fromNow()}</p>
-         </div>
-         { currentUser?.data.id === post.postUserId ?
-         <div className="edit">
-           <Link to={`/write?edit=${postId}`} state={post}>
-             <img src={Edit} alt="edit" />
-           </Link>
-           <img onClick={deletePost} src={Delete} alt="delete" />
-         </div>:
-         <></>
-         }
-       </div>
-       <div className="like">
-       <FaHeart className='liked-button'></FaHeart>
-      <FaRegHeart className="like-button"></FaRegHeart>
-      <p className="like-count">1</p>
+}
+
+
+
+
+return (
+  <div className="single">
+    <div className="content">
+      <img
+        src={`../../public/upload/${post.img}`}
+        alt="img"
+      />
+      <div className="user">
+        {post.userImage ? <img src={post.userImage} alt="img" /> : <FaUserCircle className="icon"></FaUserCircle>}
+        {/* {post.userImage && <img src={post.userImage} alt="img" />} */}
+        <div className="info">
+          <span>{post.username}</span>
+          <p>{moment(post.date).fromNow()}</p>
+        </div>
+        { currentUser?.data.id === post.postUserId ?
+        <div className="edit">
+          <Link to={`/write?edit=${postId}`} state={post}>
+            <img src={Edit} alt="edit" />
+          </Link>
+          <img onClick={deletePost} src={Delete} alt="delete" />
+        </div>:
+        <></>
+        }
       </div>
-       <h1>
-        {post.title}
-       </h1>
-       <p
-          dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(post.description),
-          }}
-          ></p>
+      <div className="like">
+      <FaHeart className='liked-button'></FaHeart>
+     <FaRegHeart className="like-button"></FaRegHeart>
+     <p className="like-count">{post.count}</p>
      </div>
-     {post?.cat && <Menu cat={post.cat}></Menu>}
-   </div>
- );
+      <h1>
+       {post.title}
+      </h1>
+      <p
+         dangerouslySetInnerHTML={{
+           __html: DOMPurify.sanitize(post.description),
+         }}
+         ></p>
+    </div>
+    {post?.cat && <Menu cat={post.cat}></Menu>}
+  </div>
+);
 };
 
 
-export default Single;
 
+
+export default Single;
 
 

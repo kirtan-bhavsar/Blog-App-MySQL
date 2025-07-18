@@ -77,9 +77,9 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
   res
-    .clearCookie("accessToken", {
-      sameSite: "none",
-      secure: true,
+    .cookie("acessToken", "none", {
+      httpOnly: true,
+      expires: new Date(Date.now() + 1 * 1000), // expires in 1 second
     })
     .status(200)
     .json({

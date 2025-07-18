@@ -55,7 +55,18 @@ const addPost = async (req, res) => {
 };
 
 const getPost = async (req, res) => {
-  const getPostQuery = `select p.id,u.img as userImage ,uid as postUserId, username,cat, title, p.img as img, description, date from posts p join users u on p.uid = u.id where p.id = ?`;
+  // const token = req.cookies.acessToken;
+  // if(!token) return res.status(400).json({message:"User not authrized to perform this action"});
+
+  // jwt.verify(token,process.env.JWT_SECRET,(err,data) => {
+  //   if(err) return res.status(400).json({message:"Invalid token"});
+
+  //   const userId = data.user.id;
+  //   const postId = req.params.id;
+
+  // })
+
+  const getPostQuery = `select p.likesCount as count,p.id,u.img as userImage ,uid as postUserId, username,cat, title, p.img as img, description, date from posts p join users u on p.uid = u.id where p.id = ?`;
 
   db.query(getPostQuery, [req.params.id], (err, data) => {
     if (err) return console.log(err);
@@ -143,7 +154,10 @@ const deletePost = async (req, res) => {
 
 const like = async (req, res) => {
   const token = req.cookies.acessToken;
-  if (!token) return res.status(400).json({ message: "User not authrized" });
+  if (!token)
+    return res
+      .status(400)
+      .json({ message: "Even hearts need ID these days. Please log in 😅" });
 
   const { postId, postedByUser } = req.params;
 
@@ -153,25 +167,73 @@ const like = async (req, res) => {
   console.log("postedByUser");
 
   jwt.verify(token, process.env.JWT_SECRET, async (err, data) => {
-    if (err) res.status(400).json({ message: "Invalid token" });
+    if (err)
+      res.status(400).json({
+        message:
+          "Even hearts need ID these days. Please log in 😅 while verifying",
+      });
 
     const likedByUser = data.user.id;
 
     const likePostQuery = `
-    start transaction;
+   start transaction;
 
-    insert into likes (postId,postedByUser,likedByUser) values (?);
 
-    update posts set likesCount = (select count(*) as count from likes where postId = ?) where id = ?;
+   insert into likes (postId,postedByUser,likedByUser) values (?);
 
-    commit;
-    `;
+
+   update posts set likesCount = (select count(*) as count from likes where postId = ?) where id = ?;
+
+
+   commit;
+   `;
 
     db.query(
       likePostQuery,
       [[postId, postedByUser, likedByUser], postId, postId],
       async (err, data) => {
-        if (err) return console.log(err);
+        if (err) {
+          if (err.errno === 1062) {
+            // logic for unliking a liked post if a user clicks the button two times
+
+            const unlikePostQuery = `          
+             start transaction ;
+
+
+             delete from likes where postId = ? and likedByUser = ?;
+
+
+             update posts set likesCount = (select count(*) as count from likes where postId = ?) where id = ?;
+
+
+             commit;
+           `;
+
+            db.query(
+              unlikePostQuery,
+              [postId, likedByUser, postId, postId],
+              (error, data) => {
+                if (error) {
+                  console.log(error);
+                  return res.status(500).json({
+                    message:
+                      "Internal Server Error when post button is clicked again",
+                  });
+                }
+
+                return res
+                  .status(200)
+                  .json({ message: "Post unliked successfully" });
+              }
+            );
+            return;
+          }
+          console.log(err);
+          return res.status(500).json({
+            message:
+              "Internal Server Error when the post is before post liked successfully",
+          });
+        }
         console.log(data);
         console.log("data");
         res.status(200).json({ message: "Post liked successfully" });

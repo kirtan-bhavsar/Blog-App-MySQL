@@ -18,6 +18,9 @@ const Home = () => {
   const navigate = useNavigate();
 
   const queries = useLocation().search;
+  console.log(queries);
+  console.log("queries");
+  console.log("queries");
 
   const useQuery = () => {
     return new URLSearchParams(useLocation().search);
@@ -82,18 +85,24 @@ const Home = () => {
     return doc.body.textContent;
   }
 
+  const [sortType,setSortType] = useState('newest');
+
   const handleSortChange = (e) => {
+
+    const selectedSortType = e.target.value;
+
+    setSortType(selectedSortType);
 
     // const sort = query.get('sort');
     console.log("handleSortChange called");
     console.log("handleSortChange called");
 
     console.log(e.target.value);
-    const sortType = e.target.value;
+    // const sortType = e.target.value;
     console.log("e.target.value");
     console.log("e.target.value");
 
-    navigate(`/?page=${currentPage}&sort=${sortType}`);
+    navigate(`/?cat=${cat}&page=${currentPage}&sort=${selectedSortType}`);
 
   }
 
@@ -117,7 +126,7 @@ const Home = () => {
       }
     }
     fetchData();
-  }, [queries]);
+  }, [queries,sortType]);
 
 
 
@@ -173,7 +182,7 @@ const Home = () => {
 
           {/* Button to display 1 always */}
           <div className="paginationBtn">
-            <Link to={cat ? `/?cat=${cat}&page=1` : `/?page=1`}><button className={Number(currentPage) === 1 ? 'active' : ''}>1</button></Link>
+            <Link to={cat ? `/?cat=${cat}&page=1&sort=${sortType}` : `/?page=1&sort=${sortType}`}><button className={Number(currentPage) === 1 ? 'active' : ''}>1</button></Link>
           </div>
 
           {/* Dots for the previous */}
@@ -184,21 +193,21 @@ const Home = () => {
           {/* Page before current page */}
           {Number(currentPage) !== 1 && Number(currentPage) !== 2 &&
             <div className="paginationBtn">
-              <Link to={cat ? `/?cat=${cat}&page=${Number(currentPage - 1)}` : `/?page=${Number(currentPage - 1)}`}><button>{Number(currentPage) - 1}</button></Link>
+              <Link to={cat ? `/?cat=${cat}&page=${Number(currentPage - 1)}&sort=${sortType}` : `/?page=${Number(currentPage - 1)}&sort=${sortType}`}><button>{Number(currentPage) - 1}</button></Link>
             </div>
           }
 
           {/* Current page to display */}
           {Number(currentPage) !== 1 && Number(currentPage) !== Number(arrayIndex) &&
             <div className="paginationBtn">
-              <Link to={cat ? `/?cat=${cat}&page=${Number(currentPage)}` : `/?page=${Number(currentPage)}`}><button className='active'>{currentPage}</button></Link>
+              <Link to={cat ? `/?cat=${cat}&page=${Number(currentPage)}&sort=${sortType}` : `/?page=${Number(currentPage)}&sort=${sortType}`}><button className='active'>{currentPage}</button></Link>
             </div>
           }
 
           {/* Page after current page */}
           {Number(currentPage) !== Number(arrayIndex) && Number(currentPage) !== Number(arrayIndex - 1) &&
             <div className="paginationBtn">
-              <Link to={cat ? `/?cat=${cat}&page=${Number(Number(currentPage) + 1)}` : `/?page=${Number(Number(currentPage) + 1)}`}><button>{Number(currentPage) + 1}</button></Link>
+              <Link to={cat ? `/?cat=${cat}&page=${Number(Number(currentPage) + 1)}&sort=${sortType}` : `/?page=${Number(Number(currentPage) + 1)}&sort=${sortType}`}><button>{Number(currentPage) + 1}</button></Link>
             </div>
           }
 
@@ -209,12 +218,12 @@ const Home = () => {
 
           {/* Button to dispaly last number i.e the  */}
           {Number(arrayIndex) !== 1 && <div className="paginationBtn">
-            <Link to={cat ? `/?cat=${cat}&page=${Number(arrayIndex)}` : `/?page=${Number(arrayIndex)}`}><button className={Number(currentPage) === Number(arrayIndex) ? 'active' : ''}>{arrayIndex}</button></Link>
+            <Link to={cat ? `/?cat=${cat}&page=${Number(arrayIndex)}&sort=${sortType}` : `/?page=${Number(arrayIndex)}&sort=${sortType}`}><button className={Number(currentPage) === Number(arrayIndex) ? 'active' : ''}>{arrayIndex}</button></Link>
           </div>}
 
           {/* Dynamic Pagination with skip values ends */}
 
-          {Number(currentPage) !== Number(arrayIndex) && <Link to={cat ? `/?cat=${cat}&page=${Number(currentPage) + 1}` : `/?page=${Number(currentPage) + 1}`}><FaChevronRight className='paginationBtn'></FaChevronRight></Link>}
+          {Number(currentPage) !== Number(arrayIndex) && <Link to={cat ? `/?cat=${cat}&page=${Number(currentPage) + 1}&sort=${sortType}` : `/?page=${Number(currentPage) + 1}&sort=${sortType}`}><FaChevronRight className='paginationBtn'></FaChevronRight></Link>}
         </div>
       </div>
     </div>

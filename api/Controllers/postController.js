@@ -21,9 +21,14 @@ const getPosts = async (req, res) => {
 
   const sort = req.query.sort;
 
-  const order = sort === ("newest" || "most-liked") ? "desc" : "asc";
+  const order =
+    sort === "newest" || sort === "most-liked" ? "desc" : "asc" || "desc";
 
-  const orderType = sort === ("oldest" || "newest") ? "date" : "likesCount";
+  const orderType =
+    sort === "oldest" || sort === "newest" ? "date" : "likesCount" || "date";
+
+  console.log(order);
+  console.log(orderType);
 
   // need to define order by and ascending or descending
 

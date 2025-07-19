@@ -9,12 +9,13 @@ import { FaChevronLeft } from 'react-icons/fa';
 import { FaChevronRight } from 'react-icons/fa';
 import {FaHeart} from 'react-icons/fa';
 import {FaRegHeart} from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
 
 
   const location = useLocation();
-
+  const navigate = useNavigate();
 
   const queries = useLocation().search;
 
@@ -25,11 +26,13 @@ const Home = () => {
   const query = useQuery();
 
   const cat = query.get('cat');
+  // const sort = query.get('sort');
   // const paginationCurrentPage = Number(query.get('page'))  || 1;
 
   const [posts, setPosts] = useState([]);
   const [totalPosts, setTotalPosts] = useState();
   const [currentPage, setCurrentPage] = useState();
+  // const [sort,setSort] = useState();
 
 
   const { currentUser } = useContext(AuthContext);
@@ -79,6 +82,21 @@ const Home = () => {
     return doc.body.textContent;
   }
 
+  const handleSortChange = (e) => {
+
+    // const sort = query.get('sort');
+    console.log("handleSortChange called");
+    console.log("handleSortChange called");
+
+    console.log(e.target.value);
+    const sortType = e.target.value;
+    console.log("e.target.value");
+    console.log("e.target.value");
+
+    navigate(`/?page=${currentPage}&sort=${sortType}`);
+
+  }
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -105,8 +123,18 @@ const Home = () => {
 
   return (
     <div className='home'>
-
-
+      <div className="sort">
+        <select name="sort" id="sort" className='sort-selection' onChange={handleSortChange}>
+          {/* <option className='sort-option' value="newest"><Link className='link order-link-display' to={`/?page=${currentPage}&sort=newest`}>Newest</Link></option> */}
+          {/* <option className='sort-option' value="newest"><Link className='link order-link-display' to={`/?page=${currentPage}&sort=oldest`}>Oldest</Link></option> */}
+          {/* <option className='sort-option' value="newest"><Link className='link order-link-display' to={`/?page=${currentPage}&sort=most-liked`}>Most Liked</Link></option> */}
+          {/* <option className='sort-option' value="newest"><Link className='link order-link-display' to={`/?page=${currentPage}&sort=least-liked`}>Least Liked</Link></option> */}
+          <option className='sort-option' value="newest" >Newest</option>
+          <option className='sort-option' value="oldest" >Oldest</option>
+          <option className='sort-option' value="most-liked" >Most Liked</option>
+          <option className='sort-option' value="least-liked" >Least Liked</option>
+        </select>
+      </div>
       <div className="posts">
         {posts.map((post) => {
           return (

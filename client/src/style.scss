@@ -236,6 +236,29 @@ $lightGreen: #b9e7e7;
           }
         }
       }
+
+      .sort {
+        // background-color: red;
+        margin-top: 20px;
+        display: flex;
+        justify-content: end;
+
+        .sort-selection {
+          background-color: white;
+          color: #333;
+          width: 150px;
+
+          .sort-option {
+            padding: 100px;
+            // background-color: red;
+          }
+
+          .order-link-display {
+            background-color: red;
+            padding: 100px;
+          }
+        }
+      }
     }
 
     // Single page

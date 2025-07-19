@@ -8,16 +8,37 @@ const getPosts = async (req, res) => {
 
   const cat = req.query.cat;
 
-  // updated code starts
+  // pagination logic
   const page = req.query.page || 1;
   console.log(page);
   const offset = (page - 1) * 5;
   console.log(offset);
-  // updated code ends
+  // pagination logic ends
+
+  // sort logic
+
+  //  sort options : oldest,newest,most liked, least liked
+
+  const sort = req.query.sort;
+
+  const order = sort === ("newest" || "most-liked") ? "desc" : "asc";
+
+  const orderType = sort === ("oldest" || "newest") ? "date" : "likesCount";
+
+  // need to define order by and ascending or descending
+
+  // for oldest : order by date asc
+  // for newest : order by date desc
+  // for most-liked : order by likesCount desc
+  // for least-liked : order by likesCount asc
+
+  // sort logic ends
 
   const getPostsQuery = cat
-    ? `select SQL_CALC_FOUND_ROWS * from posts where cat = ? order by date desc limit 5 offset ${offset} ; select FOUND_ROWS() as totalPosts`
-    : `select SQL_CALC_FOUND_ROWS * from posts order by date desc limit 5 offset ${offset} ; select FOUND_ROWS() as totalPosts`;
+    ? // ? `select SQL_CALC_FOUND_ROWS * from posts where cat = ? order by date desc limit 5 offset ${offset} ; select FOUND_ROWS() as totalPosts`
+      `select SQL_CALC_FOUND_ROWS * from posts where cat = ? order by ${orderType} ${order} limit 5 offset ${offset} ; select FOUND_ROWS() as totalPosts`
+    : // : `select SQL_CALC_FOUND_ROWS * from posts order by date desc limit 5 offset ${offset} ; select FOUND_ROWS() as totalPosts`;
+      `select SQL_CALC_FOUND_ROWS * from posts order by ${orderType} ${order} limit 5 offset ${offset} ; select FOUND_ROWS() as totalPosts`;
   // ? `select * from posts where cat = ?`
   // : `select * from posts`;
 

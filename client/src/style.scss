@@ -367,6 +367,22 @@ $lightGreen: #b9e7e7;
           }
         }
       }
+
+      .like {
+        display: flex;
+        gap: 2px;
+
+        button {
+          background-color: transparent;
+          border: transparent;
+          display: flex;
+          align-items: center;
+
+          .liked-button {
+            color: teal;
+          }
+        }
+      }
     }
 
     // Write / Add Blog
@@ -453,42 +469,87 @@ $lightGreen: #b9e7e7;
       }
     }
 
-    .like {
+    .post-stats {
       display: flex;
-      gap: 5px;
-      margin-top: -10px;
-      margin-bottom: -10px;
-      // background-color: red;
+      // flex-direction: ;
+      gap: 10px;
+      // flex-direction: column;
 
-      .like-button {
-        font-size: 16px;
-        // background-color: blue;
-        height: 100%;
+      .like {
         display: flex;
-        align-items: center;
-      }
+        gap: 2px;
+        margin-top: -10px;
+        margin-bottom: -10px;
+        // background-color: red;
 
-      .liked-button {
-        font-size: 16px;
-        // background-color: blue;
-        height: 100%;
+        .like-button {
+          font-size: 16px;
+          // background-color: blue;
+          height: 100%;
+          display: flex;
+          align-items: center;
+        }
+
+        .liked-button {
+          font-size: 16px;
+          // background-color: blue;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          color: teal;
+        }
+
+        .like-count {
+          font-size: 16px;
+          // background-color: green;
+          height: 100%;
+          display: flex;
+          align-items: center;
+        }
+
+        button {
+          background-color: transparent;
+          border: transparent;
+          cursor: pointer;
+        }
+      }
+      .comment {
         display: flex;
-        align-items: center;
-        color: teal;
-      }
+        gap: 2px;
+        margin-top: -10px;
+        margin-bottom: -10px;
+        // background-color: red;
 
-      .like-count {
-        font-size: 16px;
-        // background-color: green;
-        height: 100%;
-        display: flex;
-        align-items: center;
-      }
+        .comment-button {
+          font-size: 16px;
+          // background-color: blue;
+          height: 100%;
+          display: flex;
+          align-items: center;
+        }
 
-      button {
-        background-color: transparent;
-        border: transparent;
-        cursor: pointer;
+        // .comment-button {
+        //   font-size: 16px;
+        //   // background-color: blue;
+        //   height: 100%;
+        //   display: flex;
+        //   align-items: center;
+        //   color: teal;
+        // }
+
+        .comment-count {
+          font-size: 16px;
+          // background-color: green;
+          height: 100%;
+          display: flex;
+          align-items: center;
+        }
+
+        button {
+          background-color: transparent;
+          border: transparent;
+          cursor: pointer;
+        }
       }
     }
   }

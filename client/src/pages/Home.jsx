@@ -8,11 +8,10 @@ import { useLocation } from 'react-router-dom';
 import { FaChevronLeft } from 'react-icons/fa';
 import { FaChevronRight } from 'react-icons/fa';
 import {FaHeart} from 'react-icons/fa';
-import {FaRegHeart} from 'react-icons/fa';
+import {FaRegHeart,FaRegComment} from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
-
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -102,7 +101,7 @@ const Home = () => {
     console.log("e.target.value");
     console.log("e.target.value");
 
-    navigate(`/?cat=${cat}&page=${currentPage}&sort=${selectedSortType}`);
+    navigate( cat ? `/?cat=${cat}&page=${currentPage}&sort=${selectedSortType}` : `/?page=${currentPage}&sort=${selectedSortType}`);
 
   }
 
@@ -155,9 +154,15 @@ const Home = () => {
                 <Link className='link' to={`/post/${post.id}`}><h1>{post.title}</h1></Link>
                 {/* <p>{getText(post.description)}</p> */}
                 <p>{getText(post.description).length > 200 ? getText(post.description).slice(0,200) + "..." : getText(post.description) }</p>
+                <div className='post-stats'>
                              <div className="like">
                <FaRegHeart className='like-button'></FaRegHeart>
                <p className="like-count">{post.likesCount}</p>
+             </div>
+             <div className="comment">
+               <FaRegComment className='comment-button'></FaRegComment>
+               <p className="comment-count">{post.commentsCount}</p>
+             </div>
              </div>
                 <button><Link className='link' to={`/post/${post.id}`}>Read More</Link></button>
               </div>

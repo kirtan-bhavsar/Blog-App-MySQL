@@ -10,7 +10,7 @@ import moment from 'moment';
 import { useContext } from "react";
 import { AuthContext } from "../../../api/Context/authContext.jsx";
 // import {FaUserCircle} from 'react-icons/fa';
-import {FaUserCircle,FaHeart,FaRegHeart} from 'react-icons/fa';
+import {FaUserCircle,FaHeart,FaRegHeart,FaRegComment} from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
 import DOMPurify from 'dompurify';
 import {successNotification,errorNotification} from '../components/Toast.jsx';
@@ -102,6 +102,7 @@ return (
         <></>
         }
       </div>
+      <div className="post-stats">
       <div className="like">
         <button onClick={() => toggleLike()}>{ isPostLiked ? 
       <FaHeart className='liked-button'></FaHeart>
@@ -109,9 +110,17 @@ return (
      <FaRegHeart className="like-button"></FaRegHeart>
       }
       </button>
-     <p className="like-count">{post.count}</p>
+     <p className="like-count">{post.likesCount}</p>
      </div>
-      <h1>
+      <div className="comment">
+        <button>{ 
+          <FaRegComment className="comment-button"></FaRegComment>
+        }
+      </button>
+     <p className="like-count">{post.commentsCount}</p>
+     </div>
+     </div>
+      <h1>.
        {post.title}
       </h1>
       <p

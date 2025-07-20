@@ -104,7 +104,7 @@ const getPost = async (req, res) => {
       console.log("ifPostLiked");
       console.log("ifPostLiked");
 
-      const getPostQuery = `select p.likesCount as count,p.id,u.img as userImage ,uid as postUserId, username,cat, title, p.img as img, description, date from posts p join users u on p.uid = u.id where p.id = ?`;
+      const getPostQuery = `select p.commentsCount as commentsCount,p.likesCount as likesCount,p.id,u.img as userImage ,uid as postUserId, username,cat, title, p.img as img, description, date from posts p join users u on p.uid = u.id where p.id = ?`;
 
       db.query(getPostQuery, [req.params.id], (err, data) => {
         if (err) return console.log(err);

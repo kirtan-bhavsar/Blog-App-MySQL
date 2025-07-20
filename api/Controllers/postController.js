@@ -282,4 +282,116 @@ const like = async (req, res) => {
   });
 };
 
-export { addPost, getPost, getPosts, editPost, deletePost, like };
+const addComment = async (req, res) => {
+  const token = req.cookies.acessToken;
+  if (!token)
+    return res.status(400).json({
+      message: "🧙‍♂️ Even wizards need to log in before casting comment spells.",
+    });
+
+  const { postId, postedByUser } = req.params;
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, data) => {
+    if (err) return res.status(401).json({ message: "Token is not valid" });
+
+    const commentedByUser = data.user.id;
+
+    const comment = req.body.comment;
+
+    const addCommentQuery = `
+            
+        start transaction;
+
+        insert into comments (postId,postedByUser,commentedByUser,comment) values (?);
+
+        update posts set commentsCount = (select count(*) from comments where postId = ?) where id = ?; 
+
+        commit;
+    `;
+    db.query(
+      addCommentQuery,
+      [[postId, postedByUser, commentedByUser, comment], postId, postId],
+      (err, data) => {
+        if (err) {
+          return res.status(500).json({ message: "Internal Server Error" });
+        }
+
+        res.status(200).json({ message: "Comment added successfully" });
+      }
+    );
+  });
+};
+
+const deleteComment = async (req, res) => {
+  const token = req.cookies.acessToken;
+  if (!token)
+    return res.status(400).json({
+      message:
+        "🕵️‍♂️ Detective mode locked. Login required to delete clues (comments).",
+    });
+
+  const { commentId, postId } = req.params;
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, data) => {
+    if (err) return res.status(400).json({ message: "Token not valid" });
+
+    const commentedByUser = data.user.id;
+
+    const checkIfCommentExistsQuery = `
+    select * from comments where id = ? and commentedByUser = ?;
+    `;
+
+    db.query(
+      checkIfCommentExistsQuery,
+      [commentId, commentedByUser],
+      (err, data) => {
+        if (err) {
+          console.log(err);
+          return res
+            .status(500)
+            .json({ message: "Internal Server Error of user matching" });
+        }
+        if (data.length === 0) {
+          return res
+            .status(400)
+            .json({ message: "No user comment found for this post" });
+        }
+
+        const deleteCommentQuery = `
+              
+        start transaction;
+
+        delete from comments where id = ? and commentedByUser = ?;
+
+        update posts set commentsCount = (select count(*) from comments where postId = ?) where id = ?; 
+
+        commit;
+      `;
+
+        db.query(
+          deleteCommentQuery,
+          [commentId, commentedByUser, postId, postId],
+          (err, data) => {
+            if (err)
+              return res
+                .status(500)
+                .json({ message: "Internal Server Error for main query" });
+
+            res.status(200).json({ message: "Comment Deleted Successfully" });
+          }
+        );
+      }
+    );
+  });
+};
+
+export {
+  addPost,
+  getPost,
+  getPosts,
+  editPost,
+  deletePost,
+  like,
+  addComment,
+  deleteComment,
+};

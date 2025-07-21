@@ -42,3 +42,13 @@ app.use("/api/v1/posts", postRouter);
 app.listen(port, () => {
   console.log(`App running successfully on port ${port}`);
 });
+
+// Finally completed by adding the following functionalities :
+// -> Generic Pagination
+// -> Dynamic/Ellipsis Pagination
+// -> Like/Unlike functionality
+// -> Different options to sort the posts
+// -> displays the like and comment count
+// -> option to add comment by the user
+// -> displaying all the blog's comment
+// -> option to delete a blog comment

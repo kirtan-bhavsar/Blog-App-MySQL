@@ -9,7 +9,7 @@ import moment from 'moment';
 import { useContext } from "react";
 import { AuthContext } from "../../../api/Context/authContext.jsx";
 // import {FaUserCircle} from 'react-icons/fa';
-import {FaUserCircle,FaHeart,FaRegHeart,FaRegComment} from 'react-icons/fa';
+import {FaUserCircle,FaHeart,FaTrash,FaRegHeart,FaRegComment} from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
 import DOMPurify from 'dompurify';
 import {successNotification,errorNotification} from '../components/Toast.jsx';
@@ -26,12 +26,13 @@ const [post,setPost] = useState({});
 const[isPostLiked,setIsPostLiked] = useState(false);
 const [comments,setComments] = useState([]);
 const [comment,setComment] = useState('');
-
-
+// const [,setCurrentUser] = useState('');
 
 
 const {currentUser} = useContext(AuthContext);
-
+// console.log(currentUser.data.id);
+// console.log("currentUser as printed in single.jsx");
+// console.log("currentUser as printed in single.jsx");
 
 
 
@@ -76,7 +77,7 @@ try {
 }
 }
 fetchData();
-},[postId,isPostLiked,comment])
+},[postId,isPostLiked,comment,comments])
 
 
 const addComment = async(e) => {
@@ -85,9 +86,19 @@ const addComment = async(e) => {
   e.preventDefault();
 
   try {
-    await axios.post(`/api/v1/posts/comment/${post.id}/${post.postUserId}`,{comment})
+    await axios.post(`/api/v1/posts/comment/${post.postId}/${post.postUserId}`,{comment})
     setComment('');
     return successNotification("Comment added successfully");
+  } catch (error) {
+    return console.log(error);
+  }
+}
+
+const deleteComment = async(commentId) => {
+  // e.preventDefault();
+  try {
+    await axios.delete(`/api/v1/posts/comment/${post.postId}/${commentId}`);
+    return successNotification("Comment deleted successfully");
   } catch (error) {
     return console.log(error);
   }
@@ -103,12 +114,6 @@ try {
   return console.log(error);
 }
 }
-
-
-
-
-
-
 
 
 return (
@@ -178,8 +183,14 @@ return (
        {comment.img ? <img src={comment.img} alt="img" /> : <FaUserCircle className="icon"></FaUserCircle>}
        {/* {post.userImage && <img src={post.userImage} alt="img" />} */}
        <div className="info">
+        <div className="user-info">
          <span>{comment.username}</span>
          <p>{moment(comment.createdAt).fromNow()}</p>
+         </div>{ comment.commentedByUser === currentUser.data.id ? 
+          <FaTrash onClick={() => deleteComment(comment.commentId)} className="delete-comment"></FaTrash>
+          :
+          <></>
+         }
        </div>
      </div>
      <div className="comment-text">

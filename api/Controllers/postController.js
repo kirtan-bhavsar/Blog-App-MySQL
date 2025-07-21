@@ -114,14 +114,14 @@ const getPost = async (req, res) => {
 
 
        select p.commentsCount as commentsCount,p.likesCount as likesCount,
-       p.id,u.img as userImage ,uid as postUserId, username,cat, title,
+       p.id as postId,u.img as userImage ,uid as postUserId, username,cat, title,
        p.img as img, description, date
        from posts p join users u on p.uid = u.id  where p.id = ?;
 
 
 
 
-       select c.createdAt as createdAt, c.comment as comment, u.img as img , u.username as username
+       select c.id as commentId,c.commentedByUser as commentedByUser, c.createdAt as createdAt, c.comment as comment, u.img as img , u.username as username
        from posts p join comments c on p.id = c.postId
        join users u on u.id = c.commentedByUser
        where p.id = ?;
@@ -409,22 +409,34 @@ const deleteComment = async (req, res) => {
        delete from comments where id = ? and commentedByUser = ?;
 
 
-       update posts set commentsCount = (select count(*) from comments where postId = ?) where id = ?;
-
-
        commit;
      `;
 
         db.query(
           deleteCommentQuery,
-          [commentId, commentedByUser, postId, postId],
+          [commentId, commentedByUser],
           (err, data) => {
             if (err)
               return res
                 .status(500)
                 .json({ message: "Internal Server Error for main query" });
 
-            res.status(200).json({ message: "Comment Deleted Successfully" });
+            const updateCommentCountAfterDeletion = `
+                   update posts set commentsCount = (select count(*) from comments where postId = ?) where id = ?;
+
+            `;
+
+            db.query(
+              updateCommentCountAfterDeletion,
+              [postId, postId],
+              (err, data) => {
+                if (err) return console.log(err);
+
+                res
+                  .status(200)
+                  .json({ message: "Comment Deleted Successfully" });
+              }
+            );
           }
         );
       }

@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv/config";
 
 const getPosts = async (req, res) => {
-  console.log("getPosts called ");
+  // console.log("getPosts called ");
 
   const cat = req.query.cat;
 
@@ -27,8 +27,8 @@ const getPosts = async (req, res) => {
   const orderType =
     sort === "oldest" || sort === "newest" ? "date" : "likesCount" || "date";
 
-  console.log(order);
-  console.log(orderType);
+  // console.log(order);
+  // console.log(orderType);
 
   // need to define order by and ascending or descending
 
@@ -100,14 +100,43 @@ const getPost = async (req, res) => {
     db.query(checkIfLiked, [postId, userId], (err, data) => {
       if (err) return console.log(err);
       ifPostLiked = data.length > 0;
-      console.log(ifPostLiked);
-      console.log("ifPostLiked");
-      console.log("ifPostLiked");
+      // console.log(ifPostLiked);
+      // console.log("ifPostLiked");
+      // console.log("ifPostLiked");
 
-      const getPostQuery = `select p.commentsCount as commentsCount,p.likesCount as likesCount,p.id,u.img as userImage ,uid as postUserId, username,cat, title, p.img as img, description, date from posts p join users u on p.uid = u.id where p.id = ?`;
+      // const getPostQuery = `select p.commentsCount as commentsCount,p.likesCount as likesCount,p.id,u.img as userImage ,uid as postUserId, username,cat, title, p.img as img, description, date from posts p join users u on p.uid = u.id where p.id = ?`;
 
-      db.query(getPostQuery, [req.params.id], (err, data) => {
+      const getPostQuery = `
+            
+       start transaction;
+
+
+
+
+       select p.commentsCount as commentsCount,p.likesCount as likesCount,
+       p.id,u.img as userImage ,uid as postUserId, username,cat, title,
+       p.img as img, description, date
+       from posts p join users u on p.uid = u.id  where p.id = ?;
+
+
+
+
+       select c.createdAt as createdAt, c.comment as comment, u.img as img , u.username as username
+       from posts p join comments c on p.id = c.postId
+       join users u on u.id = c.commentedByUser
+       where p.id = ?;
+
+
+
+
+       commit;
+    
+     `;
+      db.query(getPostQuery, [req.params.id, req.params.id], (err, data) => {
         if (err) return console.log(err);
+        // console.log(data);
+        // console.log("data from getPost");
+        // console.log("data from getPost");
         return res.status(200).json({ data, ifPostLiked });
       });
     });
@@ -216,17 +245,23 @@ const like = async (req, res) => {
     const likedByUser = data.user.id;
 
     const likePostQuery = `
-   start transaction;
+  start transaction;
 
 
-   insert into likes (postId,postedByUser,likedByUser) values (?);
 
 
-   update posts set likesCount = (select count(*) as count from likes where postId = ?) where id = ?;
+  insert into likes (postId,postedByUser,likedByUser) values (?);
 
 
-   commit;
-   `;
+
+
+  update posts set likesCount = (select count(*) as count from likes where postId = ?) where id = ?;
+
+
+
+
+  commit;
+  `;
 
     db.query(
       likePostQuery,
@@ -236,18 +271,24 @@ const like = async (req, res) => {
           if (err.errno === 1062) {
             // logic for unliking a liked post if a user clicks the button two times
 
-            const unlikePostQuery = `          
-             start transaction ;
+            const unlikePostQuery = `         
+            start transaction ;
 
 
-             delete from likes where postId = ? and likedByUser = ?;
 
 
-             update posts set likesCount = (select count(*) as count from likes where postId = ?) where id = ?;
+            delete from likes where postId = ? and likedByUser = ?;
 
 
-             commit;
-           `;
+
+
+            update posts set likesCount = (select count(*) as count from likes where postId = ?) where id = ?;
+
+
+
+
+            commit;
+          `;
 
             db.query(
               unlikePostQuery,
@@ -299,15 +340,18 @@ const addComment = async (req, res) => {
     const comment = req.body.comment;
 
     const addCommentQuery = `
-            
-        start transaction;
+          
+       start transaction;
 
-        insert into comments (postId,postedByUser,commentedByUser,comment) values (?);
 
-        update posts set commentsCount = (select count(*) from comments where postId = ?) where id = ?; 
+       insert into comments (postId,postedByUser,commentedByUser,comment) values (?);
 
-        commit;
-    `;
+
+       update posts set commentsCount = (select count(*) from comments where postId = ?) where id = ?;
+
+
+       commit;
+   `;
     db.query(
       addCommentQuery,
       [[postId, postedByUser, commentedByUser, comment], postId, postId],
@@ -338,8 +382,8 @@ const deleteComment = async (req, res) => {
     const commentedByUser = data.user.id;
 
     const checkIfCommentExistsQuery = `
-    select * from comments where id = ? and commentedByUser = ?;
-    `;
+   select * from comments where id = ? and commentedByUser = ?;
+   `;
 
     db.query(
       checkIfCommentExistsQuery,
@@ -358,15 +402,18 @@ const deleteComment = async (req, res) => {
         }
 
         const deleteCommentQuery = `
-              
-        start transaction;
+            
+       start transaction;
 
-        delete from comments where id = ? and commentedByUser = ?;
 
-        update posts set commentsCount = (select count(*) from comments where postId = ?) where id = ?; 
+       delete from comments where id = ? and commentedByUser = ?;
 
-        commit;
-      `;
+
+       update posts set commentsCount = (select count(*) from comments where postId = ?) where id = ?;
+
+
+       commit;
+     `;
 
         db.query(
           deleteCommentQuery,

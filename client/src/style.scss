@@ -264,6 +264,7 @@ $lightGreen: #b9e7e7;
     // Single page
     .single {
       display: flex;
+      // flex-direction: column;
       gap: 50px;
 
       .content {
@@ -380,6 +381,131 @@ $lightGreen: #b9e7e7;
 
           .liked-button {
             color: teal;
+          }
+        }
+      }
+
+      .comment-container {
+        // width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        .add-comment {
+          // background-color: blue;
+          // display: flex;
+          // flex-direction: column;
+          // gap: 10px;
+
+          .comment-form {
+            // background-color: red;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+
+            // padding: 100px;
+            .comment-field {
+              // width: 100%;
+              // flex: 5;
+              padding: 10px 20px;
+            }
+
+            .add-comment-button {
+              // flex: 2;
+              width: 20%;
+              margin-left: 80%;
+              padding: 5px 10px;
+              // background-color: red;
+              background-color: $lightGreen;
+              border: 1px solid white;
+              // display: flex;
+              // justify-content: end;
+              transition: all 0.2s;
+              cursor: pointer;
+
+              &:hover {
+                background-color: white;
+                color: #333;
+                border: 1px solid teal;
+              }
+            }
+          }
+        }
+
+        .display-comments {
+          display: flex;
+          flex-direction: column;
+          gap: 30px;
+
+          .comment {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border-bottom: 0.5px dotted #c7c7c7;
+            padding-bottom: 5px;
+
+            .user {
+              display: flex;
+              gap: 10px;
+              align-items: center;
+              // margin-top: 20px;
+              font-size: 14px;
+
+              // asdf
+              .info {
+                display: flex;
+                // flex-direction: column;
+                gap: 7.5px;
+
+                span {
+                  display: flex;
+                  // background-color: blue;
+                  justify-content: center;
+                  align-items: center;
+                }
+
+                p {
+                  color: #555;
+                  display: flex;
+                  // background-color: red;
+                  justify-content: center;
+                  align-items: center;
+                }
+              }
+              // asdf
+
+              span {
+                font-weight: 400;
+              }
+
+              img {
+                width: 30px;
+                height: 30px;
+                object-fit: cover;
+                border-radius: 50%;
+              }
+
+              .icon {
+                width: 30px;
+                height: 30px;
+              }
+
+              .edit {
+                display: flex;
+                gap: 5px;
+
+                img {
+                  width: 20px;
+                  height: 20px;
+                  cursor: pointer;
+                }
+              }
+            }
+
+            .comment-text {
+              color: #222;
+            }
           }
         }
       }

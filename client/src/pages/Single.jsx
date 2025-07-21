@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import person from "../img/person.jpg";
 import Edit from "../img/edit.png";
@@ -16,14 +15,24 @@ import DOMPurify from 'dompurify';
 import {successNotification,errorNotification} from '../components/Toast.jsx';
 
 
+
+
 const Single = () => {
+
+
 
 
 const [post,setPost] = useState({});
 const[isPostLiked,setIsPostLiked] = useState(false);
+const [comments,setComments] = useState([]);
+const [comment,setComment] = useState('');
+
+
 
 
 const {currentUser} = useContext(AuthContext);
+
+
 
 
 const location = useLocation();
@@ -31,112 +40,175 @@ const navigate = useNavigate();
 const postId = location.pathname.split('/')[2];
 
 
+
+
 const deletePost = async() => {
- try {
-   await axios.delete(`/api/v1/posts/${postId}`)
-   return navigate('/');
- } catch (error) {
-   return console.log(error);
- }
+try {
+  await axios.delete(`/api/v1/posts/${postId}`)
+  return navigate('/');
+} catch (error) {
+  return console.log(error);
 }
+}
+
+
 
 
 useEffect(()=> {
 
+
 const fetchData = async() => {
 try {
-  const data = await axios.get(`/api/v1/posts/${postId}`);
-  setPost(data.data.data[0]);
-  // setIsPostLiked(data.data.ifPostLiked);
-  if (data.data.ifPostLiked !== isPostLiked) {
-      setIsPostLiked(data.data.ifPostLiked);
-    }
-  // console.log(data.data.data[0]);
-  // console.log("data.data.data[0]");
-  // console.log("data.data.data[0]");
+ const data = await axios.get(`/api/v1/posts/${postId}`);
+ setPost(data.data.data[1][0]);
+ // setIsPostLiked(data.data.ifPostLiked);
+ if (data.data.ifPostLiked !== isPostLiked) {
+     setIsPostLiked(data.data.ifPostLiked);
+   }
+ setComments(data.data.data[2]);
+//  console.log(data.data.data[2]);
+//  console.log("data.data[2].data in single.jsx");
+//  console.log("data.data[2].data in single.jsx");
 } catch (error) {
-  console.log(error);
-  errorNotification('Peeking allowed… but for full access, we need to know who you are!');
-  return navigate('/login');
+ console.log(error);
+ errorNotification('Peeking allowed… but for full access, we need to know who you are!');
+ return navigate('/login');
 }
 }
 fetchData();
-},[postId,isPostLiked])
+},[postId,isPostLiked,comment])
 
+
+const addComment = async(e) => {
+
+  console.log('addComment called');
+  e.preventDefault();
+
+  try {
+    await axios.post(`/api/v1/posts/comment/${post.id}/${post.postUserId}`,{comment})
+    setComment('');
+    return successNotification("Comment added successfully");
+  } catch (error) {
+    return console.log(error);
+  }
+}
 
 const toggleLike = async() => {
-  console.log('toggleLike function called');
- try {
-   await axios.post(`/api/v1/posts/like/${post.id}/${post.postUserId}`);
-   setIsPostLiked(!isPostLiked);
-   return null;
- } catch (error) {
-   return console.log(error);
- }
+ console.log('toggleLike function called');
+try {
+  await axios.post(`/api/v1/posts/like/${post.id}/${post.postUserId}`);
+  setIsPostLiked(!isPostLiked);
+  return null;
+} catch (error) {
+  return console.log(error);
 }
+}
+
+
+
+
 
 
 
 
 return (
-  <div className="single">
-    <div className="content">
-      <img
-        src={`../../public/upload/${post.img}`}
-        alt="img"
-      />
-      <div className="user">
-        {post.userImage ? <img src={post.userImage} alt="img" /> : <FaUserCircle className="icon"></FaUserCircle>}
-        {/* {post.userImage && <img src={post.userImage} alt="img" />} */}
-        <div className="info">
-          <span>{post.username}</span>
-          <p>{moment(post.date).fromNow()}</p>
-        </div>
-        { currentUser?.data.id === post.postUserId ?
-        <div className="edit">
-          <Link to={`/write?edit=${postId}`} state={post}>
-            <img src={Edit} alt="edit" />
-          </Link>
-          <img onClick={deletePost} src={Delete} alt="delete" />
-        </div>:
-        <></>
-        }
-      </div>
-      <div className="post-stats">
-      <div className="like">
-        <button onClick={() => toggleLike()}>{ isPostLiked ? 
-      <FaHeart className='liked-button'></FaHeart>
-      :
-     <FaRegHeart className="like-button"></FaRegHeart>
-      }
-      </button>
-     <p className="like-count">{post.likesCount}</p>
+ <div className="single">
+   <div className="content">
+     <img
+       src={`../../public/upload/${post.img}`}
+       alt="img"
+     />
+     <div className="user">
+       {post.userImage ? <img src={post.userImage} alt="img" /> : <FaUserCircle className="icon"></FaUserCircle>}
+       {/* {post.userImage && <img src={post.userImage} alt="img" />} */}
+       <div className="info">
+         <span>{post.username}</span>
+         <p>{moment(post.date).fromNow()}</p>
+       </div>
+       { currentUser?.data.id === post.postUserId ?
+       <div className="edit">
+         <Link to={`/write?edit=${postId}`} state={post}>
+           <img src={Edit} alt="edit" />
+         </Link>
+         <img onClick={deletePost} src={Delete} alt="delete" />
+       </div>:
+       <></>
+       }
      </div>
-      <div className="comment">
-        <button>{ 
-          <FaRegComment className="comment-button"></FaRegComment>
-        }
-      </button>
-     <p className="like-count">{post.commentsCount}</p>
-     </div>
-     </div>
-      <h1>.
-       {post.title}
-      </h1>
-      <p
-         dangerouslySetInnerHTML={{
-           __html: DOMPurify.sanitize(post.description),
-         }}
-         ></p>
+     <div className="post-stats">
+     <div className="like">
+       <button onClick={() => toggleLike()}>{ isPostLiked ?
+     <FaHeart className='liked-button'></FaHeart>
+     :
+    <FaRegHeart className="like-button"></FaRegHeart>
+     }
+     </button>
+    <p className="like-count">{post.likesCount}</p>
     </div>
-    {post?.cat && <Menu cat={post.cat}></Menu>}
-  </div>
+     <div className="comment">
+       <button>{
+         <FaRegComment className="comment-button"></FaRegComment>
+       }
+     </button>
+    <p className="like-count">{post.commentsCount}</p>
+    </div>
+    </div>
+     <h1>
+      {post.title}
+     </h1>
+     <p
+        dangerouslySetInnerHTML={{
+          __html: DOMPurify.sanitize(post.description),
+        }}
+        ></p>
+        <div className="comment-container">
+     <div className="add-comment">
+      <form onSubmit={(e) => addComment(e)} className="comment-form">
+      <input value={comment} type="text" id="comment-field" className="comment-field" placeholder="Leave a comment..." onChange={(e) => {
+        setComment(e.target.value);
+      }}/>
+      <button type="submit" className="add-comment-button">Add</button>
+      </form>
+     </div>
+     <div className="display-comments">
+       { comments.map( (comment) => {
+         return(
+           <div className="comment">
+     <div className="user">
+       {comment.img ? <img src={comment.img} alt="img" /> : <FaUserCircle className="icon"></FaUserCircle>}
+       {/* {post.userImage && <img src={post.userImage} alt="img" />} */}
+       <div className="info">
+         <span>{comment.username}</span>
+         <p>{moment(comment.createdAt).fromNow()}</p>
+       </div>
+     </div>
+     <div className="comment-text">
+       {comment.comment}
+     </div>
+</div>
+         )
+       })
+}
+     </div>
+   </div>
+   </div>
+   {post?.cat && <Menu cat={post.cat}></Menu>}
+ </div>
 );
 };
 
 
 
 
+
+
+
+
 export default Single;
+
+
+
+
+
 
 
